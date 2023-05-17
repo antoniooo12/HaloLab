@@ -1,1 +1,1 @@
-export * from './SELECT_DOCTOR_FORM_FIELDS.ts';
+export * from "./SELECT_DOCTOR_FORM_FIELDS.ts";

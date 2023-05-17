@@ -1,1 +1,2 @@
-export * from './CityApi.ts'
+export * from "./CityApi";
+export * from "./interface";

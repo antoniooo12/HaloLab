@@ -1,2 +1,2 @@
-export * from './City'
-export * from './Doctor'
+export * from "./City";
+export * from "./Doctor";

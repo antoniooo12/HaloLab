@@ -1,1 +1,1 @@
-export type IResponseCity = {id: string, name: string}
+export type IResponseCity = { id: string; name: string };
