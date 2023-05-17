@@ -9,7 +9,7 @@ export const selectDoctorFormSchema = z.object({
     [SELECT_DOCTOR_FORM_FIELDS.SEX]: z.string().min(1),
     [SELECT_DOCTOR_FORM_FIELDS.CITY]: validationAutocomplete,
     [SELECT_DOCTOR_FORM_FIELDS.DOCTOR]: validationAutocomplete,
-    // [SelectDoctorFormFields.DOCTOR_SPECIALITY]: z.string(),
+    [SELECT_DOCTOR_FORM_FIELDS.DOCTOR_SPECIALITY]: validationAutocomplete,
     [SELECT_DOCTOR_FORM_FIELDS.EMAIL]: emailSchema.optional(),
     [SELECT_DOCTOR_FORM_FIELDS.PHONE_NUMBER]: phoneNumberSchema.optional(),
 })

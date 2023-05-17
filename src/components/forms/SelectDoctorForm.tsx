@@ -3,20 +3,21 @@ import {Button, Card, Typography} from "@mui/material";
 import {useSelectDoctorForm} from "../../hooks/useSelectDoctorForm.ts";
 import {SELECT_DOCTOR_FORM_FIELDS} from "../../constants";
 
+const labels = {
+    [SELECT_DOCTOR_FORM_FIELDS.NAME]: 'Name',
+    [SELECT_DOCTOR_FORM_FIELDS.BIRTHDAY_DATE]: 'Birthday date',
+    [SELECT_DOCTOR_FORM_FIELDS.SEX]: 'Sex',
+    [SELECT_DOCTOR_FORM_FIELDS.CITY]: 'City',
+    [SELECT_DOCTOR_FORM_FIELDS.DOCTOR]: 'Doctor',
+    [SELECT_DOCTOR_FORM_FIELDS.DOCTOR_SPECIALITY]: 'Doctor Specialty',
+    [SELECT_DOCTOR_FORM_FIELDS.EMAIL]: 'Email',
+    [SELECT_DOCTOR_FORM_FIELDS.PHONE_NUMBER]: 'Phone number',
+}
 
 export const SelectDoctorForm = () => {
-    const {contactError, sexData, doctorsData, citiesData,form, onSubmit} = useSelectDoctorForm()
+    const {contactError, sexData, doctorsData, citiesData,form, onSubmit, doctorSpecialtiesData} = useSelectDoctorForm()
 
-    const labels = {
-        [SELECT_DOCTOR_FORM_FIELDS.NAME]: 'Name',
-        [SELECT_DOCTOR_FORM_FIELDS.BIRTHDAY_DATE]: 'Birthday date',
-        [SELECT_DOCTOR_FORM_FIELDS.SEX]: 'Sex',
-        [SELECT_DOCTOR_FORM_FIELDS.CITY]: 'City',
-        [SELECT_DOCTOR_FORM_FIELDS.DOCTOR]: 'Doctor',
-        // [SelectDoctorFormFields.DOCTOR_SPECIALITY]: 'Doctor Specialty',
-        [SELECT_DOCTOR_FORM_FIELDS.EMAIL]: 'Email',
-        [SELECT_DOCTOR_FORM_FIELDS.PHONE_NUMBER]: 'Phone number',
-    }
+
 
     return (
         <
@@ -53,6 +54,12 @@ export const SelectDoctorForm = () => {
                 name={SELECT_DOCTOR_FORM_FIELDS.CITY}
                 label={labels[SELECT_DOCTOR_FORM_FIELDS.CITY]}
                 data={citiesData}
+            />
+            <Form.Autocomplete
+                form={form}
+                name={SELECT_DOCTOR_FORM_FIELDS.DOCTOR_SPECIALITY}
+                label={labels[SELECT_DOCTOR_FORM_FIELDS.DOCTOR_SPECIALITY]}
+                data={doctorSpecialtiesData}
             />
             <Form.Autocomplete
                 form={form}

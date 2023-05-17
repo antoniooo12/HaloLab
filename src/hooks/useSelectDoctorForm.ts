@@ -6,12 +6,14 @@ import {useEffect, useMemo, useState} from "react";
 import {Client} from "../services";
 import {ISelectDoctorForm, selectDoctorFormSchema} from "../utils/validations/selectDoctorFormSchema.ts";
 import {SELECT_DOCTOR_FORM_FIELDS, SEX} from "../constants";
+import {useGetDoctorSpecialties} from "./useGetDoctorSpecialties.ts";
 
 
 export const useSelectDoctorForm = () => {
 
     const {data: cities} = useGetCities()
     const {data: doctors} = useGetDoctors()
+    const {data: doctorSpecialties} = useGetDoctorSpecialties()
 
     const form = useForm<ISelectDoctorForm>({
         resolver: zodResolver(selectDoctorFormSchema),
@@ -24,7 +26,9 @@ export const useSelectDoctorForm = () => {
         CITY: selectedCity,
         BIRTHDAY_DATE: clientBirthday,
         EMAIL: email,
-        PHONE_NUMBER: phoneNumber
+        PHONE_NUMBER: phoneNumber,
+        SEX: selectedSex,
+        DOCTOR_SPECIALITY: selectedDoctorSpeciality,
     } = watch()
 
     const [contactError, setContactError] = useState(false)
@@ -36,8 +40,27 @@ export const useSelectDoctorForm = () => {
         return []
     }, [cities])
 
+    const doctorSpecialtiesData = useMemo(() => {
+        if (doctorSpecialties) {
+            return doctorSpecialties
+                .filter((speciality) => {
+                    const doctorFor = speciality?.params?.gender
+                    console.log(selectedSex === SEX.Female && doctorFor === SEX.Male)
+                    if (selectedSex === SEX.Female && doctorFor === SEX.Male) {
+                        return false
+                    } else if (selectedSex === SEX.Male && doctorFor === SEX.Female) {
+                        return false
+                    }
+                    return true
+                })
+                .map(({name, id}) => ({id, label: name}))
+        }
+        return []
+    }, [doctorSpecialties, selectedSex])
+
     const doctorsData = useMemo(() => {
         const isClientNeedPediatrician = Client.isClientNeedPediatrician(clientBirthday)
+
         if (doctors) {
             return doctors
                 .filter(({isPediatrician}) => {
@@ -54,6 +77,12 @@ export const useSelectDoctorForm = () => {
                     }
                     return true
                 })
+                .filter(({specialityId}) => {
+                    if (selectedDoctorSpeciality) {
+                        return specialityId === selectedDoctorSpeciality.id
+                    }
+                    return true
+                })
                 .filter(({cityId}) => {
                     if (selectedCity) {
                         return cityId === selectedCity.id
@@ -62,7 +91,7 @@ export const useSelectDoctorForm = () => {
                 }).map(({name, id}) => ({id, label: name}))
         }
         return []
-    }, [selectedCity, doctors, clientBirthday])
+    }, [selectedCity, doctors, clientBirthday, selectedDoctorSpeciality])
 
 
     useEffect(() => {
@@ -99,9 +128,7 @@ export const useSelectDoctorForm = () => {
     useEffect(() => {
         const doctor = doctors?.find(({id}) => id === selectedDoctor?.id)
         const city = cities?.find(({id}) => id === doctor?.cityId)
-        console.log(city)
         if (city) {
-            console.log('set')
             setValue(SELECT_DOCTOR_FORM_FIELDS.CITY, {id: city.id, label: city.name})
         }
     }, [selectedDoctor])
@@ -141,5 +168,5 @@ export const useSelectDoctorForm = () => {
         checkContactInfo(form.getValues())
         handleSubmit(sendRequest)()
     }
-    return {form, onSubmit, handleSubmit, citiesData, doctorsData, contactError, sexData}
+    return {form, onSubmit, handleSubmit, citiesData, doctorsData, contactError, sexData, doctorSpecialtiesData}
 }
