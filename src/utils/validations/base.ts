@@ -4,10 +4,10 @@ export const emailSchema = z.string().email();
 export const phoneNumberSchema = z
   .string()
   .refine(
-    (value) => /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/.test(value),
+    (value) => /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/.test(value),
     {
       message:
-        "Invalid phone number format. Expected format like: +380-12345678990.",
+        "Invalid phone number format. Expected format like: 123 456 7890",
     }
   );
 

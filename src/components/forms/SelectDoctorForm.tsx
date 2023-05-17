@@ -1,13 +1,13 @@
 import { Form } from "../formComponents";
 import { Button, Card, Typography } from "@mui/material";
-import { useSelectDoctorForm } from "../../hooks/useSelectDoctorForm.ts";
+import { useSelectDoctorForm } from "../../hooks";
 import { SELECT_DOCTOR_FORM_FIELDS } from "../../constants";
 
 const labels = {
   [SELECT_DOCTOR_FORM_FIELDS.NAME]: "Name",
   [SELECT_DOCTOR_FORM_FIELDS.BIRTHDAY_DATE]: "Birthday date",
   [SELECT_DOCTOR_FORM_FIELDS.SEX]: "Sex",
-  [SELECT_DOCTOR_FORM_FIELDS.CITY]: "City",
+  [SELECT_DOCTOR_FORM_FIELDS.CITY]: "city",
   [SELECT_DOCTOR_FORM_FIELDS.DOCTOR]: "Doctor",
   [SELECT_DOCTOR_FORM_FIELDS.DOCTOR_SPECIALITY]: "Doctor Specialty",
   [SELECT_DOCTOR_FORM_FIELDS.EMAIL]: "Email",
@@ -98,7 +98,7 @@ export const SelectDoctorForm = () => {
         <Form.Error text={"Please provide at least one method of contact"} />
       )}
       <Button onClick={onSubmit} variant="contained">
-        Contained
+        Submit
       </Button>
     </Card>
   );

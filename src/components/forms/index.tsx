@@ -1,1 +1,1 @@
-export * from "./SelectDoctorForm.tsx";
+export * from "./SelectDoctorForm";

@@ -1,9 +1,9 @@
 import { Controller } from "react-hook-form";
-import { IBaseFormInput } from "./interfaces.ts";
+import { IBaseFormInput } from "./interfaces";
 import { TextField } from "@mui/material";
 import React from "react";
 import { BaseTextFieldProps } from "@mui/material/TextField/TextField";
-import { FormErrorText } from "./FormErrorText.tsx";
+import { FormErrorText } from "./FormErrorText";
 
 export const FormInputText: React.FC<IBaseFormInput & BaseTextFieldProps> = ({
   name,

@@ -1,8 +1,8 @@
 import { Controller } from "react-hook-form";
-import { IFormSelect } from "./interfaces.ts";
+import { IFormSelect } from "./interfaces";
 import { InputLabel, MenuItem, Select } from "@mui/material";
 import React from "react";
-import { FormErrorText } from "./FormErrorText.tsx";
+import { FormErrorText } from "./FormErrorText";
 
 export const FormInputSelect: React.FC<IFormSelect> = ({
   name,

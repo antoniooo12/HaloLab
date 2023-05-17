@@ -1,10 +1,6 @@
 import { z } from "zod";
-import {
-  emailSchema,
-  phoneNumberSchema,
-  validationAutocomplete,
-} from "./base.ts";
-import { SELECT_DOCTOR_FORM_FIELDS } from "../../constants";
+import { emailSchema, phoneNumberSchema, validationAutocomplete } from "./base";
+import { SELECT_DOCTOR_FORM_FIELDS, SEX } from "../../constants";
 
 export const selectDoctorFormSchema = z.object({
   [SELECT_DOCTOR_FORM_FIELDS.NAME]: z
@@ -12,7 +8,7 @@ export const selectDoctorFormSchema = z.object({
     .min(1)
     .refine((value) => /^([^0-9]*)$/.test(value), "Name is not valid"),
   [SELECT_DOCTOR_FORM_FIELDS.BIRTHDAY_DATE]: z.date(),
-  [SELECT_DOCTOR_FORM_FIELDS.SEX]: z.string().min(1),
+  [SELECT_DOCTOR_FORM_FIELDS.SEX]: z.nativeEnum(SEX),
   [SELECT_DOCTOR_FORM_FIELDS.CITY]: validationAutocomplete,
   [SELECT_DOCTOR_FORM_FIELDS.DOCTOR]: validationAutocomplete,
   [SELECT_DOCTOR_FORM_FIELDS.DOCTOR_SPECIALITY]: validationAutocomplete,

@@ -1,9 +1,9 @@
 import { Controller } from "react-hook-form";
-import { IBaseFormInput } from "./interfaces.ts";
+import { IBaseFormInput } from "./interfaces";
 import { DatePicker } from "@mui/x-date-pickers";
 import React from "react";
 import moment from "moment";
-import { FormErrorText } from "./FormErrorText.tsx";
+import { FormErrorText } from "./FormErrorText";
 
 export const FormInputDate: React.FC<IBaseFormInput> = ({
   name,

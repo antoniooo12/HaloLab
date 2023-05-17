@@ -1,8 +1,8 @@
 import { Controller } from "react-hook-form";
-import { IFormAutocomplete } from "./interfaces.ts";
+import { IFormAutocomplete } from "./interfaces";
 import { Autocomplete, TextField } from "@mui/material";
 import React from "react";
-import { FormErrorText } from "./FormErrorText.tsx";
+import { FormErrorText } from "./FormErrorText";
 
 export const FormInputAutocomplete: React.FC<IFormAutocomplete> = ({
   name,

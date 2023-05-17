@@ -1,28 +1,18 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
-import {
-  useGetCities,
-  useGetCityByDoctorId,
-  useGetDoctors,
-  useGetDoctorSpecialties,
-} from "../hooks";
-import { Client } from "../services";
-import {
-  ISelectDoctorForm,
-  selectDoctorFormSchema,
-} from "../utils/validations/selectDoctorFormSchema.ts";
+import { ISelectDoctorForm, selectDoctorFormSchema } from "../utils";
 import { SELECT_DOCTOR_FORM_FIELDS, SEX } from "../constants";
+import { service } from "./services";
 
 export const useSelectDoctorForm = () => {
-  const { data: cities } = useGetCities();
-  const { data: doctors } = useGetDoctors();
-  const { data: doctorSpecialties } = useGetDoctorSpecialties();
+  const { data: cities } = service.city.useGetCities();
+  const { data: doctors } = service.doctor.useGetDoctors();
+  const { data: doctorSpecialties } = service.doctor.useGetDoctorSpecialties();
 
   const form = useForm<ISelectDoctorForm>({
     resolver: zodResolver(selectDoctorFormSchema),
   });
-
   const { handleSubmit, watch, clearErrors, setError, setValue } = form;
 
   const {
@@ -33,7 +23,7 @@ export const useSelectDoctorForm = () => {
     PHONE_NUMBER: phoneNumber,
     SEX: selectedSex,
     DOCTOR_SPECIALITY: selectedDoctorSpeciality,
-  } = watch();
+  }: Partial<ISelectDoctorForm> = watch();
 
   const [contactError, setContactError] = useState(false);
 
@@ -58,20 +48,21 @@ export const useSelectDoctorForm = () => {
     if (doctorSpecialties) {
       return doctorSpecialties
         .filter((speciality) => {
-          const doctorFor = speciality?.params?.gender;
-          return !(
-            (selectedSex === SEX.Female && doctorFor === SEX.Male) ||
-            (selectedSex === SEX.Male && doctorFor === SEX.Female)
-          );
+          return service.doctor.isSexMatchToSpeciality(speciality, selectedSex);
         })
         .map(({ name, id }) => ({ id, label: name }));
     }
     return [];
   }, [doctorSpecialties, selectedSex]);
 
+  const isSexMatchToDoctorSpeciality =
+    service.doctor.useIsSexMatchToDoctorSpeciality(
+      selectedDoctorSpeciality?.id,
+      selectedSex
+    );
   const doctorsData = useMemo(() => {
     const isClientNeedPediatrician =
-      Client.isClientNeedPediatrician(clientBirthday);
+      service.client.isClientNeedPediatrician(clientBirthday);
 
     if (doctors) {
       return doctors
@@ -79,13 +70,19 @@ export const useSelectDoctorForm = () => {
           const isPediatricianMatch = clientBirthday
             ? isClientNeedPediatrician === doctor.isPediatrician
             : true;
+          const isSexMatch = isSexMatchToDoctorSpeciality || true;
           const isSpecialityMatch = selectedDoctorSpeciality
             ? doctor.specialityId === selectedDoctorSpeciality.id
             : true;
           const isCityMatch = selectedCity
             ? doctor.cityId === selectedCity.id
             : true;
-          return isPediatricianMatch && isSpecialityMatch && isCityMatch;
+          return (
+            isPediatricianMatch &&
+            isSpecialityMatch &&
+            isCityMatch &&
+            isSexMatch
+          );
         })
         .map(({ name, id }) => ({ id, label: name }));
     }
@@ -93,6 +90,7 @@ export const useSelectDoctorForm = () => {
   }, [selectedCity, doctors, clientBirthday, selectedDoctorSpeciality]);
   // End of the section for converting the date to display on the form
 
+  // Inform the user that the doctor is not appropriate for the selected age
   useEffect(() => {
     const doctor = doctors?.find(({ id }) => id === selectedDoctor?.id);
     if (selectedCity && doctor && doctor.cityId !== selectedCity.id) {
@@ -102,7 +100,7 @@ export const useSelectDoctorForm = () => {
       });
     } else if (doctor && clientBirthday) {
       const isClientNeedPediatrician =
-        Client.isClientNeedPediatrician(clientBirthday);
+        service.client.isClientNeedPediatrician(clientBirthday);
       if (isClientNeedPediatrician && !doctor.isPediatrician) {
         setError(SELECT_DOCTOR_FORM_FIELDS.DOCTOR, {
           type: "manual",
@@ -121,7 +119,8 @@ export const useSelectDoctorForm = () => {
     }
   }, [selectedCity, doctors, clientBirthday, setError, clearErrors]);
 
-  useGetCityByDoctorId(selectedDoctor?.id, (city) => {
+  // set city when doctor is chosen
+  service.city.useGetCityByDoctorId(selectedDoctor?.id, (city) => {
     if (city) {
       setValue(SELECT_DOCTOR_FORM_FIELDS.CITY, {
         id: city.id,
@@ -130,14 +129,20 @@ export const useSelectDoctorForm = () => {
     }
   });
 
-  // useEffect(() => {
-  //     const doctor = doctors?.find(({id}) => id === selectedDoctor?.id);
-  //     const city = cities?.find(({id}) => id === doctor?.cityId);
-  //     if (city) {
-  //         setValue(SELECT_DOCTOR_FORM_FIELDS.CITY, {id: city.id, label: city.name});
-  //     }
-  // }, [selectedDoctor, doctors, cities, setValue]);
+  // set specialty when doctor is chosen
+  service.doctor.useGetDoctorSpecialtyByDoctor(
+    selectedDoctor?.id,
+    (specialty) => {
+      if (specialty) {
+        setValue(SELECT_DOCTOR_FORM_FIELDS.DOCTOR_SPECIALITY, {
+          id: specialty.id,
+          label: specialty.name,
+        });
+      }
+    }
+  );
 
+  // track changes in contact info, when one of the fields is filled, the error is removed
   useEffect(() => {
     if (phoneNumber || email) {
       setContactError(false);
@@ -157,10 +162,6 @@ export const useSelectDoctorForm = () => {
         type: "manual",
         message: "Please fill in at least one contact field",
       });
-    } else {
-      setContactError(false);
-      clearErrors(SELECT_DOCTOR_FORM_FIELDS.PHONE_NUMBER);
-      clearErrors(SELECT_DOCTOR_FORM_FIELDS.EMAIL);
     }
   };
 

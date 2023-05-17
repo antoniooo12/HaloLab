@@ -1,7 +1,7 @@
 import { baseNetwork } from "../baseNetwork";
 import { URLs } from "../../constants";
 import { IResponseCity } from "./interface";
-import { ApiResponse } from "../interface.ts";
+import { ApiResponse } from "../interface";
 
 export class CityApi {
   private static readonly api = baseNetwork;

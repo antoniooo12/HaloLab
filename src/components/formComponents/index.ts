@@ -1,8 +1,8 @@
-import { FormInputText } from "./FormInputText.tsx";
-import { FormInputDate } from "./FormInputDate.tsx";
-import { FormInputSelect } from "./FormInputSelect.tsx";
-import { FormInputAutocomplete } from "./FormInputAutocomplete.tsx";
-import { FormErrorText } from "./FormErrorText.tsx";
+import { FormInputText } from "./FormInputText";
+import { FormInputDate } from "./FormInputDate";
+import { FormInputSelect } from "./FormInputSelect";
+import { FormInputAutocomplete } from "./FormInputAutocomplete";
+import { FormErrorText } from "./FormErrorText";
 
 export const Form = {
   Text: FormInputText,

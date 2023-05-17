@@ -1,7 +1,7 @@
-import { useGetCities } from "./useGetCities.ts";
-import { useGetDoctors } from "./useGetDoctors.ts";
+import { useGetCities } from "./useGetCities";
+import { useGetDoctors } from "../doctor/useGetDoctors";
 import { useEffect, useMemo } from "react";
-import { IResponseCity } from "../API";
+import { IResponseCity } from "../../../API";
 
 export const useGetCityByDoctorId = (
   doctorId: string,
