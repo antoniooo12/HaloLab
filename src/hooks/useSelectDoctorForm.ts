@@ -70,7 +70,10 @@ export const useSelectDoctorForm = () => {
           const isPediatricianMatch = clientBirthday
             ? isClientNeedPediatrician === doctor.isPediatrician
             : true;
-          const isSexMatch = isSexMatchToDoctorSpeciality || true;
+          const isSexMatch =
+            isSexMatchToDoctorSpeciality !== undefined
+              ? isSexMatchToDoctorSpeciality
+              : true;
           const isSpecialityMatch = selectedDoctorSpeciality
             ? doctor.specialityId === selectedDoctorSpeciality.id
             : true;
